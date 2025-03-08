@@ -20,7 +20,7 @@ export const Mentors = () => {
                             </div>
                             <div className="member-info">
                                 <h4>Dr. Pramod Joshi</h4>
-                                <span>Chief Mentor</span>
+                                <span>External Mentor</span>
                             </div>
                         </div>
                     </div>
@@ -52,7 +52,7 @@ export const Mentors = () => {
                             </div>
                             <div className="member-info">
                                 <h4>Deepak Sharma</h4>
-                                <span>Organisation Mentor</span>
+                                <span>Chief Mentor</span>
                             </div>
                         </div>
                     </div>
