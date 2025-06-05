@@ -63,6 +63,10 @@ export const TeamCouncil = () => {
                 setActiveSlider("10");
                 setCouncilText("Meet E-Cell 10.0");
                 break;
+            case '11':
+                setActiveSlider("11");
+                setCouncilText("Meet E-Cell 11.0");
+                break;
 
             default:
                 break;
@@ -84,6 +88,7 @@ export const TeamCouncil = () => {
                     <li><a onClick={() => { changeTeam('7') }} style={{ fontFamily: "Arial, Helvetica ,sans-serif", cursor: "pointer" }} className={`${activeSlider == '7' && 'active'}`}>E-Cell 7.0</a></li>
                     <li><a onClick={() => { changeTeam('9') }} style={{ fontFamily: "Arial, Helvetica ,sans-serif", cursor: "pointer" }} className={`${activeSlider == '9' && 'active'}`}>E-Cell 9.0</a></li>
                     <li><a onClick={() => { changeTeam('10') }} style={{ fontFamily: "Arial, Helvetica ,sans-serif", cursor: "pointer" }} className={`${activeSlider == '10' && 'active'}`}>E-Cell 10.0</a></li>
+                    <li><a onClick={() => { changeTeam('11') }} style={{ fontFamily: "Arial, Helvetica ,sans-serif", cursor: "pointer" }} className={`${activeSlider == '11' && 'active'}`}>E-Cell 11.0</a></li>
                 </ul>
             </nav>
 
