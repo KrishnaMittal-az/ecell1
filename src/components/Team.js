@@ -76,6 +76,12 @@ export const Team = () => {
                     <span className='text-center team-link-btn'>Team Council 10.0</span>
                 </Link>
                 </SwiperSlide>
+                <SwiperSlide className="my-card"><Link to="/councils#council-11" className="scrollto team-link"
+                    style={{ position: "relative", top: "87%" }}>
+                    <img src='assets/images/StudentCouncilActive-01.png' />
+                    <span className='text-center team-link-btn'>Team Council 11.0</span>
+                </Link>
+                </SwiperSlide>
             </Swiper>
             {/* <script src="https://code.jquery.com/jquery-3.3.1.min.js"
                 integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT"
