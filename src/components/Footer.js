@@ -11,8 +11,9 @@ export const Footer = ()=>{
               &copy; Copyright <strong><span>E-Cell</span></strong>. All Rights Reserved
             </div>
             <div className="credits">
-              Developed  by <br></br> <a href="https://www.linkedin.com/in/krishna-mittal-8709b322a/" target = "_blank">Web Development & IT Team, E-Cell 10.0</a><br></br>
-              <a href="https://www.linkedin.com/in/sajal-gupta-62912a298" target = "_blank">Web Development & IT Team, E-Cell 11.0</a>
+
+              Developed  by Web Development & IT Team, E-Cell <a href="https://www.linkedin.com/in/krishna-mittal-8709b322a/" target = "_blank"> 10.0 </a> &
+              <a href="https://www.linkedin.com/in/sajal-gupta-62912a298" target = "_blank"> 11.0</a>
             </div>
           </div>
           <div className="social-links text-center text-md-end pt-3 pt-md-0">
