@@ -96,7 +96,14 @@ export const TeamCouncil = () => {
                 <div>
                     <div >
                         <div>
-                            <Swiper className="container ml-5 d-flex flex-column-reverse" data-aos="fade-up" navigation={false} loop={false} autoplay={{ delay: 0, disableOnInteraction:false, pauseOnMouseEnter: false }} speed = {5000} centeredSlides={true} modules={[Autoplay, Navigation]} breakpoints={{
+                            <Swiper className="container ml-5 d-flex flex-column-reverse" data-aos="fade-up" 
+                            navigation={false} 
+                            loop={true} 
+                            autoplay={{ delay: 1000, disableOnInteraction:false, pauseOnMouseEnter: false }} 
+                            // speed = {300} 
+                            centeredSlides={true} 
+                            modules={[Autoplay, Navigation]} 
+                            breakpoints={{
                                 320: {
                                     slidesPerView: 1,
                                     spaceBetween: 20
