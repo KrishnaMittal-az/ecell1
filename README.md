@@ -535,9 +535,9 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
   
   ### 🌐 Find Us Online
   
-  [![Website](https://img.shields.io/badge/Website-ecellgla.org-orange?style=for-the-badge&logo=google-chrome&logoColor=white)](https://ecellgla.org)
-  [![LinkedIn](https://img.shields.io/badge/LinkedIn-E--Cell%20GLA-blue?style=for-the-badge&logo=linkedin&logoColor=white)](https://linkedin.com/company/ecell-gla)
-  [![Instagram](https://img.shields.io/badge/Instagram-@ecell__gla-E4405F?style=for-the-badge&logo=instagram&logoColor=white)](https://instagram.com/ecell_gla)
+  [![Website](https://img.shields.io/badge/Website-ecellgla.org-orange?style=for-the-badge&logo=google-chrome&logoColor=white)](https://ecellgla.com)
+  [![LinkedIn](https://img.shields.io/badge/LinkedIn-E--Cell%20GLA-blue?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/company/ecellglau/)
+  [![Instagram](https://img.shields.io/badge/Instagram-@ecell__gla-E4405F?style=for-the-badge&logo=instagram&logoColor=white)](https://www.instagram.com/ecellglau?igsh=MXV4bnZ5dWwwb2FsaQ==)
   [![GitHub](https://img.shields.io/badge/GitHub-E--Cell%20GLA-black?style=for-the-badge&logo=github&logoColor=white)](https://github.com/KrishnaMittal-az)
   
   ---
