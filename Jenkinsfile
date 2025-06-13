@@ -39,7 +39,7 @@ pipeline {
                 sh "docker ps -q --filter 'publish=3000' | xargs -r docker stop"
                 echo "Deploying the container"
                 sh "docker run -d -p 3000:3005 ecell:v1"
-                echo "Testing the CI/CD pipeline"
+                echo "Testing the CI/CD pipeline "
             }
         }
     }
