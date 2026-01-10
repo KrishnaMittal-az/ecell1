@@ -3,6 +3,8 @@ import { requireApproved } from '@/lib/auth';
 import { CouncilNavbar } from '@/components/council/council-navbar';
 import { CouncilSidebar } from '@/components/council/council-sidebar';
 
+export const dynamic = 'force-dynamic';
+
 export default async function CouncilLayout({
   children,
 }: {
