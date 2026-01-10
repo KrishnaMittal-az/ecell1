@@ -11,27 +11,45 @@ export function QRScanner() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [scanning, setScanning] = useState(false);
+  const scanningRef = useRef(false);
   const [result, setResult] = useState<{ success: boolean; message: string } | null>(null);
   const [loading, setLoading] = useState(false);
   const streamRef = useRef<MediaStream | null>(null);
 
   const startScanning = async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: 'environment' },
-      });
+      let stream: MediaStream;
+      
+      // Try rear camera first, fallback to any camera
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: 'environment' },
+        });
+      } catch (err) {
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: true,
+        });
+      }
       
       streamRef.current = stream;
       
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
-        videoRef.current.play();
+        
+        // Set scanning to true immediately
+        scanningRef.current = true;
+        setScanning(true);
+        setResult(null);
+        
+        // Try to play video
+        try {
+          await videoRef.current.play();
+        } catch (err) {
+          console.error('Video play error:', err);
+        }
       }
-      
-      setScanning(true);
-      setResult(null);
-      scanFrame();
     } catch (error) {
+      console.error('Camera access failed:', error);
       setResult({
         success: false,
         message: 'Failed to access camera. Please grant camera permissions.',
@@ -44,6 +62,7 @@ export function QRScanner() {
       streamRef.current.getTracks().forEach((track) => track.stop());
       streamRef.current = null;
     }
+    scanningRef.current = false;
     setScanning(false);
   };
 
@@ -51,7 +70,8 @@ export function QRScanner() {
     const video = videoRef.current;
     const canvas = canvasRef.current;
     
-    if (!video || !canvas || !scanning) return;
+    // Check scanningRef for synchronous state check
+    if (!video || !canvas || !scanningRef.current) return;
 
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
@@ -118,6 +138,14 @@ export function QRScanner() {
     }
   };
 
+  // Start scanning loop when scanning becomes true
+  useEffect(() => {
+    if (scanning) {
+      scanFrame();
+    }
+  }, [scanning]);
+
+  // Cleanup on unmount
   useEffect(() => {
     return () => {
       stopScanning();
@@ -127,21 +155,23 @@ export function QRScanner() {
   return (
     <div className="space-y-4">
       <div className="relative bg-black rounded-lg overflow-hidden" style={{ aspectRatio: '4/3' }}>
+        {/* Always render video element so ref is available */}
+        <video
+          ref={videoRef}
+          className={`w-full h-full object-cover ${scanning ? 'block' : 'hidden'}`}
+          playsInline
+          autoPlay
+          muted
+        />
+        <canvas ref={canvasRef} className="hidden" />
+        
         {scanning ? (
-          <>
-            <video
-              ref={videoRef}
-              className="w-full h-full object-cover"
-              playsInline
-            />
-            <canvas ref={canvasRef} className="hidden" />
-            <div className="absolute inset-0 border-4 border-blue-500 m-8 rounded-lg pointer-events-none">
-              <div className="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-blue-500" />
-              <div className="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-blue-500" />
-              <div className="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-blue-500" />
-              <div className="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-blue-500" />
-            </div>
-          </>
+          <div className="absolute inset-0 border-4 border-blue-500 m-8 rounded-lg pointer-events-none">
+            <div className="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-blue-500" />
+            <div className="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-blue-500" />
+            <div className="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-blue-500" />
+            <div className="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-blue-500" />
+          </div>
         ) : (
           <div className="flex items-center justify-center h-full">
             <div className="text-center text-white">

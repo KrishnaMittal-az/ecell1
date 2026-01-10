@@ -87,7 +87,7 @@ export interface SignupFormData {
 
 export interface CreateSessionFormData {
   title: string;
-  description: string;
+  description?: string;
   expiresInHours: number;
 }
 
