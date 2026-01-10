@@ -49,5 +49,8 @@ export const markAttendanceSchema = z.object({
 export const qrTokenSchema = z.object({
   sessionId: z.string().uuid(),
   token: z.string().uuid(),
-  expiresAt: z.string().datetime(),
+  expiresAt: z.string().refine(
+    (date) => !isNaN(Date.parse(date)),
+    "Invalid date format"
+  ),
 });
