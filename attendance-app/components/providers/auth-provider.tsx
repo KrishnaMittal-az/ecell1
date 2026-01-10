@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { AuthUser } from '@/lib/types';
 import { User as SupabaseUser } from '@supabase/supabase-js';
@@ -14,19 +14,25 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+// Create supabase client once outside component to avoid recreation
+let supabaseClient: ReturnType<typeof createClient> | null = null;
+
+function getSupabaseClient() {
+  if (typeof window === 'undefined') return null;
+  if (!supabaseClient) {
+    supabaseClient = createClient();
+  }
+  return supabaseClient;
+}
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [loading, setLoading] = useState(true);
-  const [supabase, setSupabase] = useState<ReturnType<typeof createClient> | null>(null);
 
-  // Initialize supabase client only on client-side
-  useEffect(() => {
-    const client = createClient();
-    setSupabase(client);
-  }, []);
-
-  const fetchUserData = async (authUser: SupabaseUser) => {
+  const fetchUserData = useCallback(async (authUser: SupabaseUser) => {
+    const supabase = getSupabaseClient();
     if (!supabase) return;
+    
     const { data, error } = await supabase
       .from('users')
       .select('id, email, name, role, approved')
@@ -38,20 +44,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } else {
       setUser(null);
     }
-  };
+  }, []);
 
-  const refreshUser = async () => {
+  const refreshUser = useCallback(async () => {
+    const supabase = getSupabaseClient();
     if (!supabase) return;
+    
     const { data: { user: authUser } } = await supabase.auth.getUser();
     if (authUser) {
       await fetchUserData(authUser);
     } else {
       setUser(null);
     }
-  };
+  }, [fetchUserData]);
 
   useEffect(() => {
-    if (!supabase) return;
+    const supabase = getSupabaseClient();
+    if (!supabase) {
+      setLoading(false);
+      return;
+    }
 
     const initializeAuth = async () => {
       const { data: { user: authUser } } = await supabase.auth.getUser();
@@ -78,13 +90,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => {
       subscription.unsubscribe();
     };
-  }, [supabase]);
+  }, [fetchUserData]);
 
-  const signOut = async () => {
+  const signOut = useCallback(async () => {
+    const supabase = getSupabaseClient();
     if (!supabase) return;
     await supabase.auth.signOut();
     setUser(null);
-  };
+  }, []);
 
   return (
     <AuthContext.Provider value={{ user, loading, signOut, refreshUser }}>

@@ -12,8 +12,13 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useRouter } from 'next/navigation';
+import { Menu } from 'lucide-react';
 
-export function CouncilNavbar() {
+interface CouncilNavbarProps {
+  onMenuClick?: () => void;
+}
+
+export function CouncilNavbar({ onMenuClick }: CouncilNavbarProps) {
   const { user, signOut } = useAuth();
   const router = useRouter();
 
@@ -33,11 +38,20 @@ export function CouncilNavbar() {
   };
 
   return (
-    <nav className="bg-white border-b border-gray-200 px-6 py-4">
+    <nav className="bg-white border-b border-gray-200 px-4 lg:px-6 py-4">
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">E-Cell Council</h1>
-          <p className="text-sm text-gray-500">Attendance System</p>
+        <div className="flex items-center gap-3">
+          {/* Hamburger menu for mobile */}
+          <button 
+            onClick={onMenuClick}
+            className="p-2 -ml-2 lg:hidden"
+          >
+            <Menu className="h-6 w-6" />
+          </button>
+          <div>
+            <h1 className="text-xl lg:text-2xl font-bold text-gray-900">E-Cell Council</h1>
+            <p className="text-xs lg:text-sm text-gray-500 hidden sm:block">Attendance System</p>
+          </div>
         </div>
 
         <DropdownMenu>
@@ -58,7 +72,7 @@ export function CouncilNavbar() {
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={handleSignOut}>
+            <DropdownMenuItem onSelect={handleSignOut}>
               Sign out
             </DropdownMenuItem>
           </DropdownMenuContent>

@@ -50,7 +50,7 @@ export default async function AttendancePage() {
       <Card>
         <CardHeader>
           <CardTitle>
-            <div className="flex items-center justify-between">
+            <div className="flex flex-wrap items-center justify-between gap-2">
               <span>Attendance Records</span>
               <Badge className="bg-green-100 text-green-800">
                 {attendance.length} Sessions Attended
@@ -72,9 +72,9 @@ export default async function AttendancePage() {
               <TableHeader>
                 <TableRow>
                   <TableHead>Session</TableHead>
-                  <TableHead>Description</TableHead>
+                  <TableHead className="hidden sm:table-cell">Description</TableHead>
                   <TableHead>Marked At</TableHead>
-                  <TableHead>Status</TableHead>
+                  <TableHead className="hidden sm:table-cell">Status</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -83,13 +83,13 @@ export default async function AttendancePage() {
                     <TableCell className="font-medium">
                       {record.attendance_sessions?.title || 'N/A'}
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="hidden sm:table-cell">
                       {record.attendance_sessions?.description || '-'}
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="whitespace-normal">
                       {new Date(record.marked_at).toLocaleString()}
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="hidden sm:table-cell">
                       <Badge className="bg-green-100 text-green-800">
                         <CheckCircle className="h-3 w-3 mr-1" />
                         Present

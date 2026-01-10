@@ -1,9 +1,13 @@
 import { NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase/server';
+import { createClient } from '@supabase/supabase-js';
 
 export async function GET() {
   try {
-    const supabase = await createClient();
+    // Use service role client to list buckets (requires admin permissions)
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!
+    );
 
     // Check if storage bucket exists
     const { data: buckets, error: bucketsError } = await supabase.storage.listBuckets();

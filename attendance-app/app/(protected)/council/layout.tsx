@@ -1,7 +1,6 @@
 import { redirect } from 'next/navigation';
 import { requireApproved } from '@/lib/auth';
-import { CouncilNavbar } from '@/components/council/council-navbar';
-import { CouncilSidebar } from '@/components/council/council-sidebar';
+import { CouncilLayoutClient } from './layout-client';
 
 export const dynamic = 'force-dynamic';
 
@@ -16,15 +15,5 @@ export default async function CouncilLayout({
     redirect('/login');
   }
 
-  return (
-    <div className="min-h-screen bg-gray-50">
-      <CouncilNavbar />
-      <div className="flex">
-        <CouncilSidebar />
-        <main className="flex-1 p-6 ml-64">
-          {children}
-        </main>
-      </div>
-    </div>
-  );
+  return <CouncilLayoutClient>{children}</CouncilLayoutClient>;
 }

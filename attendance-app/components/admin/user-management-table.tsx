@@ -80,9 +80,9 @@ export function UserManagementTable({ users: initialUsers }: { users: User[] }) 
               <TableHeader>
                 <TableRow>
                   <TableHead>Name</TableHead>
-                  <TableHead>Email</TableHead>
+                  <TableHead className="hidden md:table-cell">Email</TableHead>
                   <TableHead>Role</TableHead>
-                  <TableHead>Registered</TableHead>
+                  <TableHead className="hidden lg:table-cell">Registered</TableHead>
                   <TableHead>Actions</TableHead>
                 </TableRow>
               </TableHeader>
@@ -90,15 +90,15 @@ export function UserManagementTable({ users: initialUsers }: { users: User[] }) 
                 {pendingUsers.map((user) => (
                   <TableRow key={user.id}>
                     <TableCell className="font-medium">{user.name}</TableCell>
-                    <TableCell>{user.email}</TableCell>
+                    <TableCell className="hidden md:table-cell">{user.email}</TableCell>
                     <TableCell>
                       <Badge variant="outline">{user.role}</Badge>
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="hidden lg:table-cell">
                       {new Date(user.created_at).toLocaleDateString()}
                     </TableCell>
                     <TableCell>
-                      <div className="flex gap-2">
+                      <div className="flex flex-wrap gap-2">
                         <Button
                           size="sm"
                           onClick={() => handleApprove(user.id)}
@@ -133,26 +133,26 @@ export function UserManagementTable({ users: initialUsers }: { users: User[] }) 
             <TableHeader>
               <TableRow>
                 <TableHead>Name</TableHead>
-                <TableHead>Email</TableHead>
+                <TableHead className="hidden md:table-cell">Email</TableHead>
                 <TableHead>Role</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Registered</TableHead>
+                <TableHead className="hidden sm:table-cell">Status</TableHead>
+                <TableHead className="hidden lg:table-cell">Registered</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {approvedUsers.map((user) => (
                 <TableRow key={user.id}>
                   <TableCell className="font-medium">{user.name}</TableCell>
-                  <TableCell>{user.email}</TableCell>
+                  <TableCell className="hidden md:table-cell">{user.email}</TableCell>
                   <TableCell>
                     <Badge variant={user.role === 'admin' ? 'default' : 'outline'}>
                       {user.role}
                     </Badge>
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="hidden sm:table-cell">
                     <Badge className="bg-green-100 text-green-800">Approved</Badge>
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="hidden lg:table-cell">
                     {new Date(user.created_at).toLocaleDateString()}
                   </TableCell>
                 </TableRow>

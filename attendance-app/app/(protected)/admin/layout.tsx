@@ -1,7 +1,6 @@
 import { redirect } from 'next/navigation';
 import { requireAdmin } from '@/lib/auth';
-import { AdminSidebar } from '@/components/admin/admin-sidebar';
-import { AdminNavbar } from '@/components/admin/admin-navbar';
+import { AdminLayoutClient } from './layout-client';
 
 export const dynamic = 'force-dynamic';
 
@@ -16,15 +15,5 @@ export default async function AdminLayout({
     redirect('/login');
   }
 
-  return (
-    <div className="min-h-screen bg-gray-50">
-      <AdminNavbar />
-      <div className="flex">
-        <AdminSidebar />
-        <main className="flex-1 p-6 ml-64">
-          {children}
-        </main>
-      </div>
-    </div>
-  );
+  return <AdminLayoutClient>{children}</AdminLayoutClient>;
 }
