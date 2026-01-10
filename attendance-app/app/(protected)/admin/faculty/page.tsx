@@ -1,5 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { CreateFacultyForm } from '@/components/admin/create-faculty-form';
+
+export const dynamic = 'force-dynamic';
 import { FacultyList } from '@/components/admin/faculty-list';
 
 async function getFaculty() {

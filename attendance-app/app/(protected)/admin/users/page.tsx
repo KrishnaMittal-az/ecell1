@@ -1,6 +1,8 @@
 import { createClient } from '@/lib/supabase/server';
 import { UserManagementTable } from '@/components/admin/user-management-table';
 
+export const dynamic = 'force-dynamic';
+
 async function getUsers() {
   const supabase = await createClient();
   

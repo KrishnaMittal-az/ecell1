@@ -1,5 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { CreateSessionForm } from '@/components/admin/create-session-form';
+
+export const dynamic = 'force-dynamic';
 import { SessionsList } from '@/components/admin/sessions-list';
 
 async function getSessions() {

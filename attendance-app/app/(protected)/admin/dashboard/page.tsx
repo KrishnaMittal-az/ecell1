@@ -1,5 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+
+export const dynamic = 'force-dynamic';
 import { Users, QrCode, UserCheck, Clock } from 'lucide-react';
 import { StorageHealthCheck } from '@/components/admin/storage-health-check';
 

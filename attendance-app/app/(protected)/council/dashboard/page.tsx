@@ -1,5 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { requireApproved } from '@/lib/auth';
+
+export const dynamic = 'force-dynamic';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { QrCode, CheckCircle, Clock, FileText } from 'lucide-react';
 import Link from 'next/link';

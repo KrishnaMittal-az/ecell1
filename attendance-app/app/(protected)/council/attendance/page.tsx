@@ -1,5 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { requireApproved } from '@/lib/auth';
+
+export const dynamic = 'force-dynamic';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import {
