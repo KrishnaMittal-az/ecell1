@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Users, QrCode, UserCheck, Clock } from 'lucide-react';
+import { StorageHealthCheck } from '@/components/admin/storage-health-check';
 
 async function getStats() {
   const supabase = await createClient();
@@ -143,6 +144,8 @@ export default async function AdminDashboardPage() {
           </CardContent>
         </Card>
       </div>
+
+      <StorageHealthCheck />
     </div>
   );
 }

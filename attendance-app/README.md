@@ -40,6 +40,9 @@ A comprehensive attendance tracking and meeting management system built with Nex
 
 ## Setup Instructions
 
+> **📖 For detailed step-by-step instructions, see [SETUP.md](./SETUP.md)**  
+> **✅ For setup verification, see [SUPABASE_CHECKLIST.md](./SUPABASE_CHECKLIST.md)**
+
 ### 1. Clone and Install Dependencies
 
 ```bash
@@ -52,6 +55,8 @@ npm install
 1. Create a new Supabase project at [supabase.com](https://supabase.com)
 2. Run the SQL schema from `supabase/schema.sql` in the SQL Editor
 3. Get your project credentials from Settings > API
+
+**Important**: The `schema.sql` file creates the database tables AND the storage bucket for PDFs.
 
 ### 3. Environment Variables
 
@@ -71,6 +76,14 @@ npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+### 4.1. Verify Setup (Optional but Recommended)
+
+Check these health endpoints to ensure everything is configured:
+- Database: http://localhost:3000/api/health/database
+- Storage: http://localhost:3000/api/health/storage
+
+Both should return `"status": "healthy"`. If not, see [SUPABASE_CHECKLIST.md](./SUPABASE_CHECKLIST.md) for troubleshooting.
 
 ### 5. Create First Admin User
 

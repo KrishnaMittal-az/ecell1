@@ -15,7 +15,7 @@ export const signupSchema = z.object({
 // Session validators
 export const createSessionSchema = z.object({
   title: z.string().min(3, 'Title must be at least 3 characters'),
-  description: z.string().optional(),
+  description: z.string().optional().default(''),
   expiresInHours: z.number().min(1).max(168), // Max 7 days
 });
 
