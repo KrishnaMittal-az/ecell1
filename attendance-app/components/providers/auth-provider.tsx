@@ -17,9 +17,16 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [loading, setLoading] = useState(true);
-  const supabase = createClient();
+  const [supabase, setSupabase] = useState<ReturnType<typeof createClient> | null>(null);
+
+  // Initialize supabase client only on client-side
+  useEffect(() => {
+    const client = createClient();
+    setSupabase(client);
+  }, []);
 
   const fetchUserData = async (authUser: SupabaseUser) => {
+    if (!supabase) return;
     const { data, error } = await supabase
       .from('users')
       .select('id, email, name, role, approved')
@@ -34,6 +41,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const refreshUser = async () => {
+    if (!supabase) return;
     const { data: { user: authUser } } = await supabase.auth.getUser();
     if (authUser) {
       await fetchUserData(authUser);
@@ -43,6 +51,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   useEffect(() => {
+    if (!supabase) return;
+
     const initializeAuth = async () => {
       const { data: { user: authUser } } = await supabase.auth.getUser();
       
@@ -68,9 +78,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => {
       subscription.unsubscribe();
     };
-  }, []);
+  }, [supabase]);
 
   const signOut = async () => {
+    if (!supabase) return;
     await supabase.auth.signOut();
     setUser(null);
   };
