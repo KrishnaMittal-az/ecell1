@@ -1,0 +1,47 @@
+npm warn Unknown env config "python". This will stop working in the next major version of npm.
+
+> attendance-app@0.1.0 dev
+> next dev
+
+⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of /home/engine/project/package-lock.json as the root directory.
+ To silence this warning, set `turbopack.root` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/turbopack#root-directory for more information.
+ Detected additional lockfiles: 
+   * /home/engine/project/attendance-app/package-lock.json
+
+▲ Next.js 16.1.1 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://10.16.47.208:3000
+- Environments: .env.local
+
+✓ Starting...
+⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+✓ Ready in 1391ms
+○ Compiling /setup-required ...
+⨯ Error: Invalid supabaseUrl: Must be a valid HTTP or HTTPS URL.
+    at createClient (lib/supabase/client.ts:5:29)
+    at AuthProvider (components/providers/auth-provider.tsx:20:32)
+  3 |
+  4 | export function createClient() {
+> 5 |   return createBrowserClient<Database>(
+    |                             ^
+  6 |     process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  7 |     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  8 |   ); {
+  digest: '2019977322'
+}
+ GET /setup-required 500 in 5.4s (compile: 4.9s, proxy.ts: 11ms, render: 444ms)
+⨯ Error: Invalid supabaseUrl: Must be a valid HTTP or HTTPS URL.
+    at createClient (lib/supabase/client.ts:5:29)
+    at AuthProvider (components/providers/auth-provider.tsx:20:32)
+  3 |
+  4 | export function createClient() {
+> 5 |   return createBrowserClient<Database>(
+    |                             ^
+  6 |     process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  7 |     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  8 |   ); {
+  digest: '2019977322'
+}
+ GET /setup-required 500 in 112ms (compile: 9ms, proxy.ts: 7ms, render: 96ms)
