@@ -9,7 +9,8 @@ import {
   QrCode, 
   FileText, 
   UserCheck,
-  X
+  X,
+  CheckSquare
 } from 'lucide-react';
 
 const navItems = [
@@ -37,6 +38,11 @@ const navItems = [
     title: 'Faculty',
     href: '/admin/faculty',
     icon: FileText,
+  },
+  {
+    title: 'Tasks',
+    href: '/admin/tasks',
+    icon: CheckSquare,
   },
 ];
 
