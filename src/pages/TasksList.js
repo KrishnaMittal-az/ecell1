@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
-import { useTaskManagement } from '../../contexts/TaskManagementContext'
-import TaskCard from '../tasks/TaskCard'
-import TaskFilters from '../tasks/TaskFilters'
-import TaskForm from '../tasks/TaskForm'
-import TaskDetails from '../tasks/TaskDetails'
+import { useTaskManagement } from '../contexts/TaskManagementContext'
+import TaskCard from '../components/tasks/TaskCard'
+import TaskFilters from '../components/tasks/TaskFilters'
+import TaskForm from '../components/tasks/TaskForm'
+import TaskDetails from '../components/tasks/TaskDetails'
 
 const TasksList = () => {
   const { 

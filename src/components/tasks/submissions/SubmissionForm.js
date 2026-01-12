@@ -8,6 +8,7 @@ const SubmissionForm = ({ task, onSubmit, onCancel }) => {
   const [files, setFiles] = useState([])
   const [uploading, setUploading] = useState(false)
   const [error, setError] = useState('')
+  const [uploadProgress, setUploadProgress] = useState({})
   const fileInputRef = useRef(null)
 
   const handleFileSelect = (e) => {

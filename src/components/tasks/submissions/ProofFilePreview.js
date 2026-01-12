@@ -127,10 +127,9 @@ const ProofFilePreview = ({ file }) => {
               alt={file.file_name}
               className="img-fluid rounded"
               style={{ maxHeight: '300px', maxWidth: '100%' }}
-              onError={() => {
+              onError={(e) => {
                 // Hide image if it fails to load
-                const img = document.querySelector(`img[alt="${file.file_name}"]`)
-                if (img) img.style.display = 'none'
+                if (e.target) e.target.style.display = 'none'
               }}
             />
           </div>

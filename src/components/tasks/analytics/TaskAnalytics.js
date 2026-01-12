@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useTaskManagement } from '../../contexts/TaskManagementContext'
+import { useTaskManagement } from '../../../contexts/TaskManagementContext'
 
 const TaskAnalytics = () => {
   const { userProfile } = useTaskManagement()

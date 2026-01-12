@@ -38,7 +38,6 @@ CREATE TABLE IF NOT EXISTS task_submissions (
   status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'approved', 'rejected', 'revision_requested')),
   submitted_at TIMESTAMP DEFAULT now(),
   reviewed_at TIMESTAMP,
-  PRIMARY KEY (task_id, submitted_by),
   CONSTRAINT unique_submission_per_task UNIQUE(task_id, submitted_by)
 );
 

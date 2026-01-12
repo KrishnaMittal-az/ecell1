@@ -17,8 +17,10 @@ export const Home = () =>{
   useEffect(() => {
     document.body.style.backgroundImage = "none";
     
-    document.getElementById("header").style.top = "0%"; 
-    document.getElementById("footer").style.display = "block"; 
+    const header = document.getElementById("header");
+    const footer = document.getElementById("footer");
+    if (header) header.style.top = "0%"; 
+    if (footer) footer.style.display = "block"; 
   }, [])
   
   return (

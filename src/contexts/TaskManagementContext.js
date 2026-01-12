@@ -119,6 +119,17 @@ export const TaskManagementProvider = ({ children }) => {
       })
       
       if (error) throw error
+      // Ensure a user profile row exists in `users` table for app data
+      try {
+        const userId = data?.user?.id
+        if (userId) {
+          await supabase
+            .from('users')
+            .upsert([{ id: userId, name, email, year, approved: false }], { onConflict: 'id' })
+        }
+      } catch (upsertErr) {
+        console.error('Error creating user profile row:', upsertErr)
+      }
       return { data, error: null }
     } catch (error) {
       console.error('Sign up error:', error)

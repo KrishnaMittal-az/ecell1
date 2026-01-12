@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { useTaskManagement } from '../../contexts/TaskManagementContext'
-import TaskCard from '../tasks/TaskCard'
+import { useTaskManagement } from '../../../contexts/TaskManagementContext'
+import TaskCard from '../TaskCard'
 
 const TasksDashboard = () => {
   const { 
