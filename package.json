@@ -3,11 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@popperjs/core": "^2.11.8",
     "@supabase/supabase-js": "^2.48.1",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "bootstrap": "^5.3.3",
+    "date-fns": "^3.6.0",
     "react": "^18.2.0",
     "react-countup": "^6.5.3",
     "react-dom": "^18.2.0",
@@ -36,8 +38,7 @@
   "browserslist": {
     "production": [
       ">0.2%",
-      "not dead",
-      "not op_mini all"
+      "not dead"
     ],
     "development": [
       "last 1 chrome version",
