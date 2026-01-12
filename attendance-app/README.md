@@ -1,6 +1,9 @@
-# E-Cell Attendance & MOM Management System
+# E-Cell Attendance, MOM & Task Management System
 
-A comprehensive attendance tracking and meeting management system built with Next.js 15, TypeScript, Tailwind CSS, and Supabase.
+A comprehensive management system built with Next.js 15, TypeScript, Tailwind CSS, and Supabase, featuring:
+- **Attendance Tracking** with QR codes
+- **Meeting Minutes (MOM)** management
+- **Task Management** with role-based access control
 
 ## Features
 
@@ -22,6 +25,16 @@ A comprehensive attendance tracking and meeting management system built with Nex
 - View all meeting sessions
 - Access attendance records and MOMs
 - Printable attendance sheets
+
+### Task Management System
+- **Role-Based Access Control**: Year-based hierarchy (1st, 2nd, 3rd year)
+- **Task Creation & Assignment**: 2nd/3rd year can create and assign tasks
+- **Submission Workflow**: File upload system with proof files
+- **Review System**: Approve/reject/revision request functionality
+- **Notifications**: Real-time task updates
+- **Analytics**: Performance tracking (3rd year only)
+
+> **Note**: Task management is currently in scaffolding phase. The database schema is ready in `supabase/task-management-schema.sql` and placeholder pages are available at `/admin/tasks` and `/council/tasks`.
 
 ## Tech Stack
 

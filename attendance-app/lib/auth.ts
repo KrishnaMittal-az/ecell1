@@ -14,7 +14,7 @@ export async function getUser(): Promise<AuthUser | null> {
 
   const { data: userData, error } = await supabase
     .from('users')
-    .select('id, email, name, role, approved')
+    .select('id, email, name, role, approved, year')
     .eq('id', authUser.id)
     .single();
 

@@ -1,7 +1,14 @@
 # Task Management System - Setup Guide
 
 ## Overview
-This is a comprehensive task management system with role-based hierarchies, task submission workflow, proof file uploads, and review system built for E-Cell.
+This is a comprehensive task management system with role-based hierarchies, task submission workflow, proof file uploads, and review system built for E-Cell. It is integrated with the **Attendance & MOM Management System** in the `attendance-app` directory.
+
+## Location
+The task management system is located in the **attendance-app** directory and is integrated with the existing Next.js-based attendance and MOM management system.
+
+- **Frontend:** `attendance-app/app/(protected)/admin/tasks` and `attendance-app/app/(protected)/council/tasks`
+- **Database Schema:** `attendance-app/supabase/task-management-schema.sql`
+- **Types:** `attendance-app/lib/types.ts`
 
 ## Features
 - **Role-Based Access Control**: 3-tier hierarchy (1st, 2nd, 3rd year students)
@@ -24,11 +31,11 @@ Execute the SQL migration in your Supabase project:
 ```
 
 ### 2. Environment Variables
-Create a `.env.local` file in the root directory:
+The task management system uses the same Supabase configuration as the attendance app. Ensure you have the following in your `attendance-app/.env.local`:
 
 ```env
-REACT_APP_SUPABASE_URL=your_supabase_project_url
-REACT_APP_SUPABASE_ANON_KEY=your_supabase_anon_key
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 ```
 
 ### 3. Storage Setup
