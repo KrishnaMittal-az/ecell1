@@ -32,31 +32,60 @@ export default function LoginPage() {
     setLoading(true);
     setError('');
 
+    // Create a timeout promise to prevent infinite hanging
+    const timeoutPromise = new Promise<never>((_, reject) => {
+      setTimeout(() => reject(new Error('Login timed out. Please try again.')), 30000);
+    });
+
     try {
-      const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
-        email: data.email,
-        password: data.password,
-      });
+      // Add timeout wrapper
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('Login timeout - please try again')), 15000)
+      );
 
-      if (authError) throw authError;
+      const loginPromise = (async () => {
+        const signInPromise = (async () => {
+          const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+            email: data.email,
+            password: data.password,
+          });
 
-      if (authData.user) {
-        const { data: userData, error: userError } = await supabase
-          .from('users')
-          .select('role, approved')
-          .eq('id', authData.user.id)
-          .single();
+          if (authError) throw authError;
 
-        if (userError || !userData) throw userError || new Error('User not found');
+          if (authData.user) {
+            console.log('Auth successful, fetching user data...');
 
-        const user = userData as { role: string; approved: boolean };
+            const { data: userData, error: userError } = await supabase
+              .from('users')
+              .select('role, approved')
+              .eq('id', authData.user.id)
+              .single();
 
-        if (!user.approved) {
-          await supabase.auth.signOut();
-          setError('Your account is pending approval. Please wait for admin confirmation.');
-          setLoading(false);
-          return;
-        }
+            console.log('User data result:', { userData, userError });
+
+            if (userError) {
+              // User might exist in auth but not in users table
+              console.error('User fetch error:', userError);
+              throw new Error('User profile not found. Please contact admin.');
+            }
+
+            if (!userData) {
+              throw new Error('User not found');
+            }
+
+            const user = userData as { role: string; approved: boolean };
+
+            if (!user.approved) {
+              await supabase.auth.signOut();
+              throw new Error('Your account is pending approval. Please wait for admin confirmation.');
+            }
+
+            return user;
+          }
+          throw new Error('No user data returned');
+        })();
+
+        const user = await Promise.race([signInPromise, timeoutPromise]);
 
         if (user.role === 'admin') {
           router.push('/admin/dashboard');
@@ -66,6 +95,7 @@ export default function LoginPage() {
         router.refresh();
       }
     } catch (err) {
+      console.error('Login error:', err);
       setError(err instanceof Error ? err.message : 'Failed to login');
       setLoading(false);
     }
@@ -87,7 +117,7 @@ export default function LoginPage() {
                 <AlertDescription>{error}</AlertDescription>
               </Alert>
             )}
-            
+
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input
@@ -116,12 +146,12 @@ export default function LoginPage() {
               )}
             </div>
           </CardContent>
-          
+
           <CardFooter className="flex flex-col space-y-4">
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? 'Signing in...' : 'Sign In'}
             </Button>
-            
+
             <p className="text-sm text-center text-gray-600">
               Don&apos;t have an account?{' '}
               <Link href="/signup" className="text-blue-600 hover:underline font-medium">

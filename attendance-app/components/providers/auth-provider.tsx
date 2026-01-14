@@ -32,7 +32,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const fetchUserData = useCallback(async (authUser: SupabaseUser) => {
     const supabase = getSupabaseClient();
     if (!supabase) return;
-    
+
     const { data, error } = await supabase
       .from('users')
       .select('id, email, name, role, approved')
@@ -49,7 +49,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const refreshUser = useCallback(async () => {
     const supabase = getSupabaseClient();
     if (!supabase) return;
-    
+
     const { data: { user: authUser } } = await supabase.auth.getUser();
     if (authUser) {
       await fetchUserData(authUser);
@@ -59,6 +59,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [fetchUserData]);
 
   useEffect(() => {
+    let isMounted = true;
     const supabase = getSupabaseClient();
     if (!supabase) {
       setLoading(false);
@@ -66,19 +67,35 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
 
     const initializeAuth = async () => {
-      const { data: { user: authUser } } = await supabase.auth.getUser();
-      
-      if (authUser) {
-        await fetchUserData(authUser);
+      try {
+        const { data: { user: authUser } } = await supabase.auth.getUser();
+
+        if (!isMounted) return;
+
+        if (authUser) {
+          await fetchUserData(authUser);
+        }
+
+        if (isMounted) {
+          setLoading(false);
+        }
+      } catch (error) {
+        // Ignore AbortError - happens during React StrictMode unmount/remount
+        if (error instanceof Error && error.name === 'AbortError') {
+          return;
+        }
+        console.error('Auth initialization error:', error);
+        if (isMounted) {
+          setLoading(false);
+        }
       }
-      
-      setLoading(false);
     };
 
     initializeAuth();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
+        if (!isMounted) return;
         if (event === 'SIGNED_IN' && session?.user) {
           await fetchUserData(session.user);
         } else if (event === 'SIGNED_OUT') {
@@ -88,6 +105,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     );
 
     return () => {
+      isMounted = false;
       subscription.unsubscribe();
     };
   }, [fetchUserData]);

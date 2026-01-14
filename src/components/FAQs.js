@@ -3,7 +3,7 @@ export const FAQs = () => {
     const handleAccordion = (e) => {
       let getTarget = e.target.getAttribute('data-bs-target');
       let getId = document.querySelector(getTarget);
-      getId.classList.toggle('show');
+      if (getId) getId.classList.toggle('show');
     }
     return (
         <section id="faq" className="faq">

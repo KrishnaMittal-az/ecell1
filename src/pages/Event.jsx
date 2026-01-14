@@ -10,8 +10,10 @@ export const Events = () => {
         document.body.style.backgroundAttachment = "fixed";
         document.body.style.backgroundSize = "cover";
         document.body.style.backgroundPsition = "center";
-        document.getElementById("header").style.top = "-100%"; 
-        document.getElementById("footer").style.display = "none"; 
+        const header = document.getElementById("header");
+        const footer = document.getElementById("footer");
+        if (header) header.style.top = "-100%"; 
+        if (footer) footer.style.display = "none"; 
     }, [])
 
     return (
