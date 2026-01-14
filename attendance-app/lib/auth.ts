@@ -14,7 +14,7 @@ export async function getUser(): Promise<AuthUser | null> {
 
   const { data: userData, error } = await supabase
     .from('users')
-    .select('id, email, name, role, approved')
+    .select('id, email, name, role, approved, year')
     .eq('id', authUser.id)
     .single();
 
@@ -47,9 +47,19 @@ export async function requireAdmin(): Promise<AuthUser> {
 
 export async function requireApproved(): Promise<AuthUser> {
   const user = await requireAuth();
-  
+
   if (!user.approved) {
     throw new Error('Account not approved');
+  }
+
+  return user;
+}
+
+export async function require3rdYear(): Promise<AuthUser> {
+  const user = await requireApproved();
+
+  if (user.role !== 'admin' && user.year !== '3rd_year') {
+    throw new Error('Forbidden: 3rd year access required');
   }
 
   return user;

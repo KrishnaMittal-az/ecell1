@@ -3,13 +3,28 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
-import { LayoutDashboard, QrCode, History, FileText, X } from 'lucide-react';
+import { LayoutDashboard, QrCode, History, FileText, X, Users, Calendar, Megaphone } from 'lucide-react';
 
 const navItems = [
   {
     title: 'Dashboard',
     href: '/council/dashboard',
     icon: LayoutDashboard,
+  },
+  {
+    title: 'Members',
+    href: '/members',
+    icon: Users,
+  },
+  {
+    title: 'Events',
+    href: '/events',
+    icon: Calendar,
+  },
+  {
+    title: 'Announcements',
+    href: '/announcements',
+    icon: Megaphone,
   },
   {
     title: 'Scan QR',
