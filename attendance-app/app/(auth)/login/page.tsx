@@ -32,6 +32,11 @@ export default function LoginPage() {
     setLoading(true);
     setError('');
 
+    // Create a timeout promise to prevent infinite hanging
+    const timeoutPromise = new Promise<never>((_, reject) => {
+      setTimeout(() => reject(new Error('Login timed out. Please try again.')), 30000);
+    });
+
     try {
       // Add timeout wrapper
       const timeoutPromise = new Promise((_, reject) =>
@@ -39,53 +44,56 @@ export default function LoginPage() {
       );
 
       const loginPromise = (async () => {
-        const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
-          email: data.email,
-          password: data.password,
-        });
+        const signInPromise = (async () => {
+          const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+            email: data.email,
+            password: data.password,
+          });
 
-        if (authError) throw authError;
+          if (authError) throw authError;
 
-        if (authData.user) {
-          console.log('Auth successful, fetching user data...');
+          if (authData.user) {
+            console.log('Auth successful, fetching user data...');
 
-          const { data: userData, error: userError } = await supabase
-            .from('users')
-            .select('role, approved')
-            .eq('id', authData.user.id)
-            .single();
+            const { data: userData, error: userError } = await supabase
+              .from('users')
+              .select('role, approved')
+              .eq('id', authData.user.id)
+              .single();
 
-          console.log('User data result:', { userData, userError });
+            console.log('User data result:', { userData, userError });
 
-          if (userError) {
-            // User might exist in auth but not in users table
-            console.error('User fetch error:', userError);
-            throw new Error('User profile not found. Please contact admin.');
+            if (userError) {
+              // User might exist in auth but not in users table
+              console.error('User fetch error:', userError);
+              throw new Error('User profile not found. Please contact admin.');
+            }
+
+            if (!userData) {
+              throw new Error('User not found');
+            }
+
+            const user = userData as { role: string; approved: boolean };
+
+            if (!user.approved) {
+              await supabase.auth.signOut();
+              throw new Error('Your account is pending approval. Please wait for admin confirmation.');
+            }
+
+            return user;
           }
+          throw new Error('No user data returned');
+        })();
 
-          if (!userData) {
-            throw new Error('User not found');
-          }
+        const user = await Promise.race([signInPromise, timeoutPromise]);
 
-          const user = userData as { role: string; approved: boolean };
-
-          if (!user.approved) {
-            await supabase.auth.signOut();
-            setError('Your account is pending approval. Please wait for admin confirmation.');
-            setLoading(false);
-            return;
-          }
-
-          if (user.role === 'admin') {
-            router.push('/admin/dashboard');
-          } else {
-            router.push('/council/dashboard');
-          }
-          router.refresh();
+        if (user.role === 'admin') {
+          router.push('/admin/dashboard');
+        } else {
+          router.push('/council/dashboard');
         }
-      })();
-
-      await Promise.race([loginPromise, timeoutPromise]);
+        router.refresh();
+      }
     } catch (err) {
       console.error('Login error:', err);
       setError(err instanceof Error ? err.message : 'Failed to login');
