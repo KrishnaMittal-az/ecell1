@@ -23,6 +23,37 @@ A comprehensive attendance tracking and meeting management system built with Nex
 - Access attendance records and MOMs
 - Printable attendance sheets
 
+### Member Profiles (Phase 2)
+- Rich member profiles with bio, LinkedIn, phone, and profile images
+- Skill endorsement system with proficiency ratings
+- Contribution score tracking
+- Achievement badges display
+- Leaderboard for top contributors
+- Search and filter members by year, skills, and name
+
+### Events Management (Phase 2)
+- Create events (3rd year members only)
+- Event capacity management and registration
+- Event status tracking (upcoming, ongoing, completed)
+- Post-event feedback system
+- View event attendees and attendance
+- Search and filter events by status and date
+
+### Announcements (Phase 2)
+- Create announcements (3rd year members only)
+- Year-based visibility (all, 1st_year, 2nd_year, 3rd_year)
+- Pin important announcements (admin only)
+- Read status tracking for personalization
+- Filtered feed based on user's year
+- Full announcement view with details
+
+### Achievements & Badges (Phase 2)
+- Achievement definitions with icons and criteria
+- Award achievements to members (admin only)
+- Display earned badges on member profiles
+- Achievement gallery view
+- Track when badges were earned
+
 ## Tech Stack
 
 - **Frontend**: Next.js 15 (App Router), TypeScript, Tailwind CSS
@@ -161,11 +192,23 @@ attendance-app/
 
 ## Database Schema
 
+### Phase 1
 - **users**: Council members with approval workflow
 - **attendance_sessions**: Meeting sessions with QR tokens
 - **attendance_logs**: Attendance records (unique per user/session)
 - **faculty**: Faculty members database
 - **faculty_view_tokens**: Secure access tokens with expiration
+
+### Phase 2
+- **member_profiles**: Extended user profiles with bio, LinkedIn, phone
+- **skills**: Skill directory with categories
+- **user_skills**: Skill endorsements with proficiency ratings
+- **events**: Event management with capacity and status
+- **event_registrations**: Event registrations with feedback
+- **announcements**: Announcements with visibility controls
+- **announcement_reads**: Track read status for personalization
+- **achievements**: Badge/achievement definitions
+- **user_achievements**: Awards earned by members
 
 ## API Endpoints
 
@@ -178,6 +221,43 @@ attendance-app/
 
 ### Council
 - `POST /api/council/mark-attendance` - Mark attendance via QR
+
+### Members (Phase 2)
+- `GET /api/members` - List members with filters
+- `GET /api/members/[id]` - Get member profile
+- `GET /api/members/leaderboard` - Get top contributors
+- `PATCH /api/members/profile` - Update own profile
+- `POST /api/members/[id]/skills` - Endorse skill
+- `DELETE /api/members/[id]/skills` - Remove endorsement
+- `GET /api/members/[id]/achievements` - Get achievements
+- `POST /api/members/[id]/achievements` - Award achievement (admin)
+
+### Skills (Phase 2)
+- `GET /api/skills` - List skills
+- `POST /api/skills` - Create skill
+
+### Events (Phase 2)
+- `GET /api/events` - List events
+- `GET /api/events/[id]` - Get event details
+- `POST /api/events` - Create event (3rd year+)
+- `PATCH /api/events/[id]` - Update event
+- `DELETE /api/events/[id]` - Delete event
+- `POST /api/events/[id]/register` - Register for event
+- `DELETE /api/events/[id]/register` - Cancel registration
+- `POST /api/events/[id]/feedback` - Submit feedback
+
+### Announcements (Phase 2)
+- `GET /api/announcements` - List announcements
+- `GET /api/announcements/[id]` - Get announcement
+- `POST /api/announcements` - Create announcement (3rd year+)
+- `PATCH /api/announcements/[id]` - Update announcement
+- `DELETE /api/announcements/[id]` - Delete announcement
+- `POST /api/announcements/[id]/pin` - Pin announcement (admin)
+- `DELETE /api/announcements/[id]/pin` - Unpin announcement
+
+### Achievements (Phase 2)
+- `GET /api/achievements` - List achievements
+- `POST /api/achievements` - Create achievement (admin)
 
 ## Deployment
 

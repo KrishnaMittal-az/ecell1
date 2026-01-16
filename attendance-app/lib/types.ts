@@ -5,6 +5,7 @@ export interface User {
   name: string;
   role: 'admin' | 'member';
   approved: boolean;
+  year: '1st_year' | '2nd_year' | '3rd_year' | 'member';
   created_at: string;
   updated_at: string;
 }
@@ -71,6 +72,7 @@ export interface AuthUser {
   name: string;
   role: 'admin' | 'member';
   approved: boolean;
+  year: '1st_year' | '2nd_year' | '3rd_year' | 'member';
 }
 
 // Form types
@@ -101,6 +103,45 @@ export interface GenerateTokenFormData {
   expiresInDays: number;
 }
 
+// Phase 2 Types
+
+export interface MemberProfile {
+  id: string;
+  user_id: string;
+  bio: string | null;
+  linkedin_url: string | null;
+  phone: string | null;
+  profile_image_url: string | null;
+  contribution_score: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface MemberProfileWithUser extends MemberProfile {
+  users: Pick<User, 'id' | 'name' | 'email' | 'year' | 'role' | 'approved'>;
+}
+
+export interface Skill {
+  id: string;
+  name: string;
+  category: string;
+  created_at: string;
+}
+
+export interface UserSkill {
+  user_id: string;
+  skill_id: string;
+  proficiency: number;
+  endorsed_by: string | null;
+  created_at: string;
+}
+
+export interface UserSkillWithDetails extends UserSkill {
+  skills: Skill;
+  users?: Pick<User, 'id' | 'name'>;
+}
+
+export interface Event {
 // Task Management Types
 export type TaskPriority = 'low' | 'medium' | 'high' | 'urgent';
 export type TaskStatus = 'pending' | 'in_progress' | 'submitted' | 'approved' | 'rejected' | 'cancelled';
@@ -120,6 +161,119 @@ export interface Task {
   title: string;
   description: string | null;
   created_by: string;
+  event_date: string;
+  location: string | null;
+  capacity: number | null;
+  image_url: string | null;
+  status: 'upcoming' | 'ongoing' | 'completed';
+  created_at: string;
+  updated_at: string;
+}
+
+export interface EventWithCreator extends Event {
+  users: Pick<User, 'id' | 'name' | 'email'>;
+}
+
+export interface EventWithRegistrations extends Event {
+  users: Pick<User, 'id' | 'name' | 'email'>;
+  event_registrations: EventRegistration[];
+}
+
+export interface EventRegistration {
+  id: string;
+  event_id: string;
+  user_id: string;
+  registered_at: string;
+  attended: boolean;
+  feedback_score: number | null;
+  feedback_text: string | null;
+}
+
+export interface EventRegistrationWithUser extends EventRegistration {
+  users: Pick<User, 'id' | 'name' | 'email'>;
+}
+
+export interface Announcement {
+  id: string;
+  title: string;
+  content: string;
+  created_by: string;
+  visibility: 'all' | '1st_year' | '2nd_year' | '3rd_year';
+  is_pinned: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface AnnouncementWithCreator extends Announcement {
+  users: Pick<User, 'id' | 'name' | 'email'>;
+}
+
+export interface AnnouncementWithReadStatus extends AnnouncementWithCreator {
+  announcement_reads: { user_id: string; read_at: string }[];
+}
+
+export interface Achievement {
+  id: string;
+  name: string;
+  description: string | null;
+  icon_url: string | null;
+  criteria: string | null;
+  created_at: string;
+}
+
+export interface UserAchievement {
+  user_id: string;
+  achievement_id: string;
+  earned_at: string;
+}
+
+export interface UserAchievementWithDetails extends UserAchievement {
+  achievements: Achievement;
+}
+
+// Phase 2 Form Types
+export interface UpdateProfileFormData {
+  bio?: string;
+  linkedin_url?: string;
+  phone?: string;
+  profile_image_url?: string;
+}
+
+export interface CreateSkillFormData {
+  name: string;
+  category: string;
+}
+
+export interface EndorseSkillFormData {
+  skill_id: string;
+  proficiency: number;
+}
+
+export interface CreateEventFormData {
+  title: string;
+  description?: string;
+  event_date: string;
+  location?: string;
+  capacity?: number;
+  image_url?: string;
+}
+
+export interface CreateAnnouncementFormData {
+  title: string;
+  content: string;
+  visibility: 'all' | '1st_year' | '2nd_year' | '3rd_year';
+}
+
+export interface CreateAchievementFormData {
+  name: string;
+  description?: string;
+  icon_url?: string;
+  criteria?: string;
+}
+
+export interface EventFeedbackFormData {
+  feedback_score: number;
+  feedback_text?: string;
   assigned_to: string;
   due_date: string;
   priority: TaskPriority;
