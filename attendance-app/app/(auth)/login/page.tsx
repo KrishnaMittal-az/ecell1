@@ -1,165 +1,89 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useUser } from '@auth0/nextjs-auth0/client';
 import Link from 'next/link';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { createClient } from '@/lib/supabase/client';
-import { loginSchema } from '@/lib/validators';
-import { LoginFormData } from '@/lib/types';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
+  const { user, isLoading, error } = useUser();
   const router = useRouter();
-  const [error, setError] = useState<string>('');
-  const [loading, setLoading] = useState(false);
-  const supabase = createClient();
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<LoginFormData>({
-    resolver: zodResolver(loginSchema),
-  });
-
-  const onSubmit = async (data: LoginFormData) => {
-    setLoading(true);
-    setError('');
-
-    // Create a timeout promise to prevent infinite hanging
-    const timeoutPromise = new Promise<never>((_, reject) => {
-      setTimeout(() => reject(new Error('Login timed out. Please try again.')), 30000);
-    });
-
-    try {
-      // Add timeout wrapper
-      const timeoutPromise = new Promise((_, reject) =>
-        setTimeout(() => reject(new Error('Login timeout - please try again')), 15000)
-      );
-
-      const loginPromise = (async () => {
-        const signInPromise = (async () => {
-          const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
-            email: data.email,
-            password: data.password,
-          });
-
-          if (authError) throw authError;
-
-          if (authData.user) {
-            console.log('Auth successful, fetching user data...');
-
-            const { data: userData, error: userError } = await supabase
-              .from('users')
-              .select('role, approved')
-              .eq('id', authData.user.id)
-              .single();
-
-            console.log('User data result:', { userData, userError });
-
-            if (userError) {
-              // User might exist in auth but not in users table
-              console.error('User fetch error:', userError);
-              throw new Error('User profile not found. Please contact admin.');
-            }
-
-            if (!userData) {
-              throw new Error('User not found');
-            }
-
-            const user = userData as { role: string; approved: boolean };
-
-            if (!user.approved) {
-              await supabase.auth.signOut();
-              throw new Error('Your account is pending approval. Please wait for admin confirmation.');
-            }
-
-            return user;
-          }
-          throw new Error('No user data returned');
-        })();
-
-        const user = await Promise.race([signInPromise, timeoutPromise]);
-
-        if (user.role === 'admin') {
-          router.push('/admin/dashboard');
-        } else {
-          router.push('/council/dashboard');
-        }
-        router.refresh();
-      }
-    } catch (err) {
-      console.error('Login error:', err);
-      setError(err instanceof Error ? err.message : 'Failed to login');
-      setLoading(false);
+  // If user is already logged in, redirect to dashboard
+  useEffect(() => {
+    if (user && !isLoading) {
+      // User is authenticated, redirect will happen via callback
+      router.push('/auth/callback-handler');
     }
-  };
+  }, [user, isLoading, router]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold text-center">Welcome Back</CardTitle>
+          <CardTitle className="text-2xl font-bold text-center">
+            Welcome Back
+          </CardTitle>
           <CardDescription className="text-center">
             Sign in to E-Cell Attendance System
           </CardDescription>
         </CardHeader>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <CardContent className="space-y-4">
-            {error && (
-              <Alert variant="destructive">
-                <AlertDescription>{error}</AlertDescription>
-              </Alert>
-            )}
 
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="your.email@example.com"
-                {...register('email')}
-                disabled={loading}
-              />
-              {errors.email && (
-                <p className="text-sm text-red-500">{errors.email.message}</p>
-              )}
+        <CardContent className="space-y-4">
+          {/* Only show error if it's not the expected "Unauthorized" for unauthenticated users */}
+          {error && !error.message?.includes('Unauthorized') && (
+            <div className="bg-red-50 border border-red-200 rounded-lg p-3 text-red-700 text-sm">
+              {error.message}
             </div>
+          )}
 
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="••••••••"
-                {...register('password')}
-                disabled={loading}
-              />
-              {errors.password && (
-                <p className="text-sm text-red-500">{errors.password.message}</p>
-              )}
-            </div>
-          </CardContent>
+          <p className="text-center text-gray-600 text-sm">
+            Click below to sign in securely with Auth0
+          </p>
+        </CardContent>
 
-          <CardFooter className="flex flex-col space-y-4">
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? 'Signing in...' : 'Sign In'}
-            </Button>
+        <CardFooter className="flex flex-col space-y-4">
+          {/* Auth0 Login Button */}
+          <a
+            href="/auth/login"
+            className="w-full inline-flex items-center justify-center px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl"
+          >
+            <svg className="mr-2 h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M21.98 7.448L19.62 0H4.347L2.02 7.448c-1.352 4.312.03 9.206 3.815 12.015L12.007 24l6.157-4.552c3.755-2.81 5.182-7.688 3.815-12.015l-6.16 4.58 2.343 7.45-6.157-4.597-6.158 4.58 2.358-7.433-6.188-4.55 7.63-.045L12.008 0l2.356 7.404 7.615.044z" />
+            </svg>
+            Sign in with Auth0
+          </a>
 
-            <p className="text-sm text-center text-gray-600">
-              Don&apos;t have an account?{' '}
-              <Link href="/signup" className="text-blue-600 hover:underline font-medium">
-                Sign up
-              </Link>
-            </p>
-          </CardFooter>
-        </form>
+          <p className="text-sm text-center text-gray-600">
+            Don&apos;t have an account?{' '}
+            <a
+              href="/auth/login?screen_hint=signup"
+              className="text-blue-600 hover:underline font-medium"
+            >
+              Sign up
+            </a>
+          </p>
+        </CardFooter>
       </Card>
     </div>
   );

@@ -72,25 +72,47 @@ export const TaskManagementProvider = ({ children }: { children: React.ReactNode
   // Helper to get supabase with any type for task tables
   const db = () => supabase as any
 
-  // Fetch user profile with year field
+  // Fetch user profile with year field - using direct fetch to avoid AbortError
   const fetchUserProfile = useCallback(async (userId: string) => {
     if (!supabase) return
 
     try {
-      const { data, error } = await db()
-        .from('users')
-        .select('id, email, name, role, approved, year')
-        .eq('id', userId)
-        .single()
+      // Get the session token for authorization
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session) {
+        console.error('No session available for fetchUserProfile')
+        setUserProfile(null)
+        setProfileLoading(false)
+        return
+      }
 
-      if (error) {
-        console.error('Error fetching user profile:', error)
+      // Use direct fetch API to bypass Supabase client lock mechanism
+      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+      const response = await fetch(
+        `${supabaseUrl}/rest/v1/users?id=eq.${userId}&select=id,email,name,role,approved,year`,
+        {
+          headers: {
+            'apikey': process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+            'Authorization': `Bearer ${session.access_token}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      )
+
+      if (!response.ok) {
+        console.error('Error fetching user profile:', response.status)
         setUserProfile(null)
       } else {
-        setUserProfile(data as TaskUserProfile)
+        const users = await response.json()
+        if (users && users.length > 0) {
+          setUserProfile(users[0] as TaskUserProfile)
+        } else {
+          setUserProfile(null)
+        }
       }
     } catch (err) {
       console.error('Error fetching user profile:', err)
+      setUserProfile(null)
     } finally {
       setProfileLoading(false)
     }
