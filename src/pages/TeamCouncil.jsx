@@ -12,8 +12,10 @@ export const TeamCouncil = () => {
     const [councilText, setCouncilText] = useState("Meet E-Cell 1.0");
     useEffect(() => {
         document.body.style.backgroundImage = "none";
-        document.getElementById("header").style.top = "0%"; 
-        document.getElementById("footer").style.display = "block"; 
+        const header = document.getElementById("header");
+        const footer = document.getElementById("footer");
+        if (header) header.style.top = "0%"; 
+        if (footer) footer.style.display = "block"; 
         
         const hash = window.location.hash;
         if (hash) {
@@ -79,16 +81,16 @@ export const TeamCouncil = () => {
         <>
             <nav id="council-nav" className="team-council order-last order-lg-0" style={{ marginTop: "8rem" }}>
                 <ul>
-                    <li><a onClick={() => { changeTeam('1') }} style={{ fontFamily: "Arial, Helvetica,sans-serif", cursor: "pointer" }} className={`${activeSlider == '1' && 'active'}`}>E-Cell 1.0</a></li>
-                    <li><a onClick={() => { changeTeam('2') }} style={{ fontFamily: "Arial, Helvetica, sans-serif", cursor: "pointer" }} className={`${activeSlider == '2' && 'active'}`}>E-Cell 2.0</a></li>
-                    <li><a onClick={() => { changeTeam('3') }} style={{ fontFamily: "Arial, Helvetica ,sans-serif", cursor: "pointer" }} className={`${activeSlider == '3' && 'active'}`}>E-Cell 3.0</a></li>
-                    <li><a onClick={() => { changeTeam('4') }} style={{ fontFamily: "Arial, Helvetica ,sans-serif", cursor: "pointer" }} className={`${activeSlider == '4' && 'active'}`}>E-Cell 4.0</a></li>
-                    <li><a onClick={() => { changeTeam('5') }} style={{ fontFamily: "Arial, Helvetica ,sans-serif", cursor: "pointer" }} className={`${activeSlider == '5' && 'active'}`}>E-Cell 5.0</a></li>
-                    <li><a onClick={() => { changeTeam('6') }} style={{ fontFamily: "Arial, Helvetica ,sans-serif", cursor: "pointer" }} className={`${activeSlider == '6' && 'active'}`}>E-Cell 6.0</a></li>
-                    <li><a onClick={() => { changeTeam('7') }} style={{ fontFamily: "Arial, Helvetica ,sans-serif", cursor: "pointer" }} className={`${activeSlider == '7' && 'active'}`}>E-Cell 7.0</a></li>
-                    <li><a onClick={() => { changeTeam('9') }} style={{ fontFamily: "Arial, Helvetica ,sans-serif", cursor: "pointer" }} className={`${activeSlider == '9' && 'active'}`}>E-Cell 9.0</a></li>
-                    <li><a onClick={() => { changeTeam('10') }} style={{ fontFamily: "Arial, Helvetica ,sans-serif", cursor: "pointer" }} className={`${activeSlider == '10' && 'active'}`}>E-Cell 10.0</a></li>
-                    <li><a onClick={() => { changeTeam('11') }} style={{ fontFamily: "Arial, Helvetica ,sans-serif", cursor: "pointer" }} className={`${activeSlider == '11' && 'active'}`}>E-Cell 11.0</a></li>
+                    <li><button type="button" onClick={() => { changeTeam('1') }} style={{ fontFamily: "Arial, Helvetica,sans-serif", cursor: "pointer" }} className={`${activeSlider === '1' && 'active'}`}>E-Cell 1.0</button></li>
+                    <li><button type="button" onClick={() => { changeTeam('2') }} style={{ fontFamily: "Arial, Helvetica, sans-serif", cursor: "pointer" }} className={`${activeSlider === '2' && 'active'}`}>E-Cell 2.0</button></li>
+                    <li><button type="button" onClick={() => { changeTeam('3') }} style={{ fontFamily: "Arial, Helvetica ,sans-serif", cursor: "pointer" }} className={`${activeSlider === '3' && 'active'}`}>E-Cell 3.0</button></li>
+                    <li><button type="button" onClick={() => { changeTeam('4') }} style={{ fontFamily: "Arial, Helvetica ,sans-serif", cursor: "pointer" }} className={`${activeSlider === '4' && 'active'}`}>E-Cell 4.0</button></li>
+                    <li><button type="button" onClick={() => { changeTeam('5') }} style={{ fontFamily: "Arial, Helvetica ,sans-serif", cursor: "pointer" }} className={`${activeSlider === '5' && 'active'}`}>E-Cell 5.0</button></li>
+                    <li><button type="button" onClick={() => { changeTeam('6') }} style={{ fontFamily: "Arial, Helvetica ,sans-serif", cursor: "pointer" }} className={`${activeSlider === '6' && 'active'}`}>E-Cell 6.0</button></li>
+                    <li><button type="button" onClick={() => { changeTeam('7') }} style={{ fontFamily: "Arial, Helvetica ,sans-serif", cursor: "pointer" }} className={`${activeSlider === '7' && 'active'}`}>E-Cell 7.0</button></li>
+                    <li><button type="button" onClick={() => { changeTeam('9') }} style={{ fontFamily: "Arial, Helvetica ,sans-serif", cursor: "pointer" }} className={`${activeSlider === '9' && 'active'}`}>E-Cell 9.0</button></li>
+                    <li><button type="button" onClick={() => { changeTeam('10') }} style={{ fontFamily: "Arial, Helvetica ,sans-serif", cursor: "pointer" }} className={`${activeSlider === '10' && 'active'}`}>E-Cell 10.0</button></li>
+                    <li><button type="button" onClick={() => { changeTeam('11') }} style={{ fontFamily: "Arial, Helvetica ,sans-serif", cursor: "pointer" }} className={`${activeSlider === '11' && 'active'}`}>E-Cell 11.0</button></li>
                 </ul>
             </nav>
 

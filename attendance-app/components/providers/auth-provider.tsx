@@ -1,115 +1,103 @@
-'use client';
+"use client"
+import React, { createContext, useContext, useEffect, useState, useCallback } from 'react'
+import { useUser } from '@auth0/nextjs-auth0/client'
 
-import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
-import { createClient } from '@/lib/supabase/client';
-import { AuthUser } from '@/lib/types';
-import { User as SupabaseUser } from '@supabase/supabase-js';
+export interface AuthUser {
+  id: string
+  email: string
+  name: string
+  role: string
+  approved: boolean
+  year?: string
+}
 
 interface AuthContextType {
-  user: AuthUser | null;
-  loading: boolean;
-  signOut: () => Promise<void>;
-  refreshUser: () => Promise<void>;
+  user: AuthUser | null
+  loading: boolean
+  isAuthenticated: boolean
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const AuthContext = createContext<AuthContextType>({
+  user: null,
+  loading: true,
+  isAuthenticated: false,
+})
 
-// Create supabase client once outside component to avoid recreation
-let supabaseClient: ReturnType<typeof createClient> | null = null;
-
-function getSupabaseClient() {
-  if (typeof window === 'undefined') return null;
-  if (!supabaseClient) {
-    supabaseClient = createClient();
+export const useAuth = () => {
+  const context = useContext(AuthContext)
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider')
   }
-  return supabaseClient;
+  return context
 }
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<AuthUser | null>(null);
-  const [loading, setLoading] = useState(true);
+export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+  const { user: auth0User, isLoading: auth0Loading, error } = useUser()
+  const [user, setUser] = useState<AuthUser | null>(null)
+  const [profileLoading, setProfileLoading] = useState(true)
 
-  const fetchUserData = useCallback(async (authUser: SupabaseUser) => {
-    const supabase = getSupabaseClient();
-    if (!supabase) return;
-    
-    const { data, error } = await supabase
-      .from('users')
-      .select('id, email, name, role, approved')
-      .eq('id', authUser.id)
-      .single();
+  // Fetch user profile from Supabase when Auth0 user is available
+  const fetchUserProfile = useCallback(async (email: string) => {
+    try {
+      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+      const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
-    if (!error && data) {
-      setUser(data as AuthUser);
-    } else {
-      setUser(null);
+      if (!supabaseUrl || !anonKey) {
+        console.error('Missing Supabase environment variables')
+        setProfileLoading(false)
+        return
+      }
+
+      const response = await fetch(
+        `${supabaseUrl}/rest/v1/users?email=eq.${encodeURIComponent(email)}&select=id,email,name,role,approved,year`,
+        {
+          headers: {
+            'apikey': anonKey,
+            'Content-Type': 'application/json',
+          },
+        }
+      )
+
+      if (!response.ok) {
+        console.error('Failed to fetch user profile:', response.status)
+        setProfileLoading(false)
+        return
+      }
+
+      const users = await response.json()
+      if (users && users.length > 0) {
+        setUser(users[0] as AuthUser)
+      }
+    } catch (err) {
+      console.error('Error fetching user profile:', err)
+    } finally {
+      setProfileLoading(false)
     }
-  }, []);
-
-  const refreshUser = useCallback(async () => {
-    const supabase = getSupabaseClient();
-    if (!supabase) return;
-    
-    const { data: { user: authUser } } = await supabase.auth.getUser();
-    if (authUser) {
-      await fetchUserData(authUser);
-    } else {
-      setUser(null);
-    }
-  }, [fetchUserData]);
+  }, [])
 
   useEffect(() => {
-    const supabase = getSupabaseClient();
-    if (!supabase) {
-      setLoading(false);
-      return;
+    if (auth0Loading) return
+
+    if (auth0User?.email) {
+      fetchUserProfile(auth0User.email)
+    } else {
+      setUser(null)
+      setProfileLoading(false)
     }
+  }, [auth0User, auth0Loading, fetchUserProfile])
 
-    const initializeAuth = async () => {
-      const { data: { user: authUser } } = await supabase.auth.getUser();
-      
-      if (authUser) {
-        await fetchUserData(authUser);
-      }
-      
-      setLoading(false);
-    };
+  if (error) {
+    console.error('Auth0 error:', error)
+  }
 
-    initializeAuth();
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        if (event === 'SIGNED_IN' && session?.user) {
-          await fetchUserData(session.user);
-        } else if (event === 'SIGNED_OUT') {
-          setUser(null);
-        }
-      }
-    );
-
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, [fetchUserData]);
-
-  const signOut = useCallback(async () => {
-    const supabase = getSupabaseClient();
-    if (!supabase) return;
-    await supabase.auth.signOut();
-    setUser(null);
-  }, []);
+  const loading = auth0Loading || profileLoading
+  const isAuthenticated = !!auth0User && !!user
 
   return (
-    <AuthContext.Provider value={{ user, loading, signOut, refreshUser }}>
+    <AuthContext.Provider value={{ user, loading, isAuthenticated }}>
       {children}
     </AuthContext.Provider>
-  );
+  )
 }
 
-export function useAuth() {
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
-}
+export default AuthContext

@@ -19,13 +19,12 @@ interface CouncilNavbarProps {
 }
 
 export function CouncilNavbar({ onMenuClick }: CouncilNavbarProps) {
-  const { user, signOut } = useAuth();
+  const { user } = useAuth();
   const router = useRouter();
 
-  const handleSignOut = async () => {
-    await signOut();
-    router.push('/login');
-    router.refresh();
+  const handleSignOut = () => {
+    // Auth0 logout - redirect to the logout route
+    window.location.href = '/auth/logout';
   };
 
   const getInitials = (name: string) => {
@@ -42,7 +41,7 @@ export function CouncilNavbar({ onMenuClick }: CouncilNavbarProps) {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           {/* Hamburger menu for mobile */}
-          <button 
+          <button
             onClick={onMenuClick}
             className="p-2 -ml-2 lg:hidden"
           >

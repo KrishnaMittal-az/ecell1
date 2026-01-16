@@ -25,6 +25,9 @@ const navItems = [
     title: 'Announcements',
     href: '/announcements',
     icon: Megaphone,
+    title: 'Tasks',
+    href: '/council/tasks',
+    icon: CheckSquare,
   },
   {
     title: 'Scan QR',
@@ -55,12 +58,12 @@ export function CouncilSidebar({ isOpen, onClose }: CouncilSidebarProps) {
     <>
       {/* Mobile overlay */}
       {isOpen && (
-        <div 
-          className="fixed inset-0 bg-black/50 z-40 lg:hidden" 
+        <div
+          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
           onClick={onClose}
         />
       )}
-      
+
       {/* Sidebar */}
       <aside className={cn(
         "fixed left-0 top-[73px] h-[calc(100vh-73px)] w-64 bg-white border-r border-gray-200 z-50 transition-transform duration-300",
@@ -68,18 +71,18 @@ export function CouncilSidebar({ isOpen, onClose }: CouncilSidebarProps) {
         isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
       )}>
         {/* Mobile close button */}
-        <button 
+        <button
           onClick={onClose}
           className="absolute top-4 right-4 p-2 lg:hidden"
         >
           <X className="h-5 w-5" />
         </button>
-        
+
         <nav className="p-4 space-y-2 mt-8 lg:mt-0">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = pathname === item.href;
-            
+
             return (
               <Link
                 key={item.href}

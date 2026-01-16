@@ -9,9 +9,33 @@ import { Home } from './pages/Home';
 import { Gallery } from './pages/Gallery';
 import { TeamCouncil } from './pages/TeamCouncil';
 import { Events } from './pages/Event';
-
+import { TaskManagementProvider, useTaskManagement } from './contexts/TaskManagementContext';
+import LoginPage from './pages/auth/LoginPage';
+import TasksList from './pages/TasksList';
+import TasksDashboard from './components/tasks/dashboard/TasksDashboard';
+import TaskAnalytics from './components/tasks/analytics/TaskAnalytics';
 
 const NavbarWrapper = () => {
+  const { user, loading } = useTaskManagement()
+
+  if (loading) {
+    return (
+      <div className="loader-container">
+        <span className="loader">
+          <img alt='preloader' src='assets/images/logoorange.png' />
+        </span>
+      </div>
+    )
+  }
+
+  if (!user) {
+    return (
+      <div>
+        <Outlet />
+      </div>
+    )
+  }
+
   return (
     <div>
       <Navbar />
@@ -21,10 +45,47 @@ const NavbarWrapper = () => {
   )
 };
 
+const ProtectedRoute = ({ children, allowedYears }) => {
+  const { userProfile, loading } = useTaskManagement()
+
+  if (loading) {
+    return (
+      <div className="container-fluid mt-4">
+        <div className="text-center">
+          <div className="spinner-border" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  if (!userProfile) {
+    return <LoginPage />
+  }
+
+  if (allowedYears && !allowedYears.includes(userProfile.year)) {
+    return (
+      <div className="container-fluid mt-4">
+        <div className="alert alert-danger">
+          <h4>Access Restricted</h4>
+          <p>You don't have permission to access this page.</p>
+        </div>
+      </div>
+    )
+  }
+
+  return children
+}
+
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <NavbarWrapper />,
+    element: (
+      <TaskManagementProvider>
+        <NavbarWrapper />
+      </TaskManagementProvider>
+    ),
     children: [
       { path: '/', element: <Home /> },
       { path: '/gallery', element: <Gallery /> },
@@ -34,9 +95,37 @@ const router = createBrowserRouter([
             `assets/data/team.json`
           );
         }
-
       },
-      { path: '/events', element: <Events />}
+      { path: '/events', element: <Events /> },
+      
+      // Auth routes
+      { path: '/login', element: <LoginPage /> },
+      
+      // Task management routes
+      { 
+        path: '/tasks', 
+        element: (
+          <ProtectedRoute>
+            <TasksList />
+          </ProtectedRoute>
+        ) 
+      },
+      { 
+        path: '/tasks/dashboard', 
+        element: (
+          <ProtectedRoute>
+            <TasksDashboard />
+          </ProtectedRoute>
+        ) 
+      },
+      { 
+        path: '/tasks/analytics', 
+        element: (
+          <ProtectedRoute allowedYears={['3rd']}>
+            <TaskAnalytics />
+          </ProtectedRoute>
+        ) 
+      },
     ],
     // errorElement: <NotFound />
   },
